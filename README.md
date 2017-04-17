@@ -28,15 +28,19 @@
 > 使用本工具无需关注poi依赖问题（只需引入以下相关jar包)。
 
 ``` xml
-         <dependency>
-    		<groupId>org.wuwz</groupId>
+		<dependency>
+			<groupId>org.wuwz</groupId>
 			<artifactId>ExcelKit</artifactId>
 			<version>2.0</version>
 		</dependency>
+		<dependency>
+			<groupId>xml-apis</groupId>
+			<artifactId>xml-apis</artifactId>
+			<version>1.4.01</version>
+		</dependency>
 		
-
-        <!--以下视情况而定-->
-        <dependency>
+		<!--以下视情况而定-->
+		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 			<version>1.2.9</version>
@@ -64,7 +68,7 @@
 ``` java
 	public class User {
 
-    		@ExportConfig("UID")
+    	@ExportConfig("UID")
 		private Integer uid;
 	
 		@ExportConfig("用户名")
@@ -79,8 +83,8 @@
 		@ExportConfig(value = "年级", convert = "c:org.wuwz.poi.test.GradeIdConvert")
 		private Integer gradeId;
         
-        	// getter setter...
-        }
+       // getter setter...
+   }
 ```
 
 2.1.实现ExportConvert（如果配置了convert属性,参考gradeId字段）：
@@ -89,13 +93,21 @@
 
 将单元格值进行转换后再导出：
 目前支持以下几种场景：
+
 1. 固定的数值转换为字符串值（如：1代表男，2代表女）
+
 	表达式: ```"s:1=男,2=女"```
 	
-2. 数值对应的值需要查询数据库才能进行映射(实现org.wuwz.poi.convert.ExportConvert接口)
-	表达式: ```"c:org.wuwz.poi.test.GradeIdConvert"```
+	
+2. 数值对应的值需要查询数据库才能进行映射 (用的机会不多,一般这种情况直接在DAO处理)
+
+   需要实现org.wuwz.poi.convert.ExportConvert接口
+   
+   表达式: ```"c:org.wuwz.poi.test.GradeIdConvert"```
+	
 
 ``` java
+
 	public class GradeIdConvert implements ExportConvert {
 		
 		static Map<Integer, String> records;
@@ -175,9 +187,8 @@
 		.setMaxSheetRecords(10000) //设置每个sheet的最大记录数,默认为10000,可不设置
 		.toExcel(records, "用户数据", new FileOutputStream(new File("c:/test001.xlsx")));
 ```
-		
-		
-
+	
+	
 
   [1]: https://github.com/wuwz/ExcelKit-Example
   [2]: https://github.com/wuwz/ExcelKit/blob/master/compile-jar/ExcelKit-2.0.jar?raw=true
